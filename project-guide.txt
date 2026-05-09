@@ -1,0 +1,315 @@
+================================================================
+CPU SCHEDULING SIMULATOR — Project Guide
+OS Project C3: Round Robin vs Priority Scheduling
+================================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. WHAT IS THIS PROJECT?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This is a web-based CPU Scheduling Simulator that compares two
+scheduling algorithms side by side:
+
+  → Round Robin (RR)
+  → Preemptive Priority Scheduling (PP)
+
+The goal is to understand the difference between a scheduler
+that is FAIR (Round Robin) and one that is URGENCY-DRIVEN
+(Priority Scheduling).
+
+You input your processes, click a button to see each
+algorithm's results, then compare them.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. HOW TO USE THE SIMULATOR (Step by Step)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1 — Choose a Scenario or Enter Your Own Processes
+------------------------------------------------------
+At the top, you will find 5 preset scenario buttons:
+  A, B, C, D, E
+
+Click any scenario to load it automatically.
+Or you can type your own processes in the table manually.
+
+STEP 2 — Set the Time Quantum
+------------------------------
+The Time Quantum is a number that controls how long each
+process gets the CPU in Round Robin before being paused.
+
+Example: Quantum = 3 means each process runs for 3 time
+units at a time, then the next process gets its turn.
+
+Important: This number does NOT affect Priority Scheduling.
+
+STEP 3 — Enter Your Processes
+-------------------------------
+Each process has 4 fields:
+
+  Process ID   → A unique name (e.g., P1, P2, TaskA)
+  Arrival Time → When does this process arrive? (>= 0)
+  Burst Time   → How long does it need the CPU? (> 0)
+  Priority     → How important is it? (1 = most important)
+
+You can add more processes with "+ Add Process".
+You can remove a row with the "✕" button on each row.
+
+STEP 4 — Run the Algorithms
+-----------------------------
+Click: "▶ Show Round Robin Results"
+  → This runs Round Robin and shows its Gantt chart
+     plus detailed metrics below it.
+
+Click: "▶ Show Priority Results"
+  → This runs Priority Scheduling and shows its
+     Gantt chart plus detailed metrics below it.
+
+You can click them in any order. Each one works independently.
+
+STEP 5 — Compare Both
+-----------------------
+After running BOTH algorithms, the Compare button becomes
+active (turns into a gradient button).
+
+Click: "⚖ Compare Both Algorithms"
+  → This shows a side-by-side comparison of averages,
+    a conclusion, and an AI-generated analysis report.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. WHAT YOU SEE IN THE RESULTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For EACH algorithm (Round Robin and Priority), you get:
+
+A) GANTT CHART
+--------------
+A colored bar chart that shows the execution timeline.
+Each block = a process running during that time period.
+Hover over a block to see: process name, start time, end time.
+Time markers appear below the chart.
+
+B) METRICS BREAKDOWN (shown in 4 sections below the Gantt)
+------------------------------------------------------------
+
+Section 1 — COMPLETION TIME
+  The exact time when each process finished.
+  Formula: When did the process exit the CPU for the last time?
+
+Section 2 — TURNAROUND TIME (TAT)
+  How long from arrival to completion?
+  Formula: TAT = Completion Time - Arrival Time
+  Lower is better. It measures total time spent in the system.
+
+Section 3 — WAITING TIME (WT)
+  How long did the process wait in the queue?
+  Formula: WT = TAT - Burst Time
+  Lower is better. Pure waiting with no useful work done.
+
+Section 4 — RESPONSE TIME (RT)
+  How long until the process got the CPU for the FIRST time?
+  Formula: RT = First Start Time - Arrival Time
+  Lower is better. Important for interactive systems.
+
+Each section shows:
+  - The value for every process (color-coded by process ID)
+  - The AVERAGE at the end of the row
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. THE TWO ALGORITHMS — How They Work
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A) ROUND ROBIN (RR)
+--------------------
+The idea: Every process takes turns. No one waits forever.
+
+How it works:
+1. Processes are sorted by arrival time.
+2. A ready queue is maintained. When a process arrives,
+   it joins the back of the queue.
+3. The CPU picks the process at the FRONT of the queue.
+4. It runs that process for exactly "Time Quantum" units.
+5. If the process is NOT done, it goes back to the END
+   of the queue.
+6. If the process IS done, it is removed and marked complete.
+7. Repeat until all processes are finished.
+
+Key property: FAIRNESS
+Every process gets an equal share of CPU time. No process
+can monopolize the CPU for more than one quantum at a time.
+
+Affected by: Time Quantum
+  - Small quantum → more context switches, feels more fair
+    but more overhead.
+  - Large quantum → fewer switches, but some processes
+    may wait longer.
+
+B) PREEMPTIVE PRIORITY SCHEDULING (PP)
+----------------------------------------
+The idea: The most important process always runs first.
+
+Priority Rule used in this simulator:
+  → LOWER number = HIGHER priority
+  → Priority 1 is the MOST important
+  → Priority 5 is LESS important than Priority 1
+
+How it works:
+1. At every single time unit, check all processes that
+   have arrived and are not yet done.
+2. Pick the one with the LOWEST priority number
+   (= highest importance).
+3. Tie-break: If two processes have the same priority,
+   the one that arrived EARLIER runs first.
+4. Run it for 1 unit. Then repeat from step 1.
+5. If a new process arrives with a HIGHER priority
+   (lower number) than the current one, the current
+   process is immediately STOPPED (preempted) and the
+   new one takes over.
+6. Continue until all processes complete.
+
+Key property: URGENCY
+High-priority processes finish quickly. Low-priority ones
+may have to wait for all high-priority ones to finish first.
+
+Risk: STARVATION
+If high-priority processes keep arriving, a low-priority
+process may never get the CPU. This is called starvation.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. THE 5 PRESET SCENARIOS — What They Test
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SCENARIO A — Normal Workload
+  What it tests: Basic behavior with a standard mix of
+  processes arriving at different times with different
+  burst times and priorities.
+  What to look for: How each algorithm handles a typical
+  real-world workload.
+
+SCENARIO B — Urgency Case
+  What it tests: Contains processes with clearly HIGH
+  priority (priority 1) arriving early. These should
+  preempt everything else in Priority Scheduling.
+  What to look for: Does Priority Scheduling give those
+  urgent processes a major advantage in response time and
+  waiting time? Round Robin ignores priority, so these
+  urgent processes get the same treatment as others.
+
+SCENARIO C — Fairness Case
+  What it tests: ALL processes have the same priority
+  and arrive at the same time with equal burst times.
+  What to look for: Round Robin should distribute CPU
+  time perfectly equally. Priority Scheduling will
+  rely on arrival-time tie-breaking, so it may behave
+  similarly or differently depending on order.
+
+SCENARIO D — Starvation Case
+  What it tests: One process (P5) has a very LOW priority
+  (priority 5) while all others have HIGH priority
+  (priority 1). High-priority processes keep P5 waiting.
+  What to look for: Does P5 wait a very long time in
+  Priority Scheduling? Is its waiting time much higher
+  than the average? Round Robin protects P5 by giving
+  it equal turn time.
+
+SCENARIO E — Invalid Input
+  What it tests: Demonstrates the validation system.
+  Contains: duplicate Process ID, negative burst time,
+  and Time Quantum = 0.
+  What to look for: The simulator should reject the input
+  and show a clear error message. It should NOT run.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. WHAT DO THE COMPARISON RESULTS MEAN?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After clicking Compare, you see three sections:
+
+A) COMPARISON ANALYSIS
+-----------------------
+Shows Avg WT, Avg TAT, Avg RT for both algorithms side by side.
+A green "✓ Better" badge marks the algorithm that did better
+on each metric. Lower value = better for all three metrics.
+
+B) CONCLUSION
+--------------
+Tells you which algorithm won overall (based on most metrics),
+whether priority-based service helped urgent processes,
+whether fairness improved, and whether starvation occurred.
+
+C) AI ANALYSIS REPORT
+----------------------
+A detailed report written in simple English that explains:
+  1) Overview of both algorithms
+  2) Performance comparison with reasons
+  3) Fairness analysis
+  4) Urgency and priority behavior
+  5) Starvation analysis
+  6) Execution order differences
+  7) Scenario-based insights
+  8) Final conclusion and recommendation
+
+Note: The AI report requires internet access and only works
+inside the Claude.ai environment.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. INPUT VALIDATION — What Is Rejected
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The simulator will show an error and refuse to run if:
+
+  ✗ No processes are entered
+  ✗ Time Quantum is 0 or negative
+  ✗ Time Quantum is not a whole number
+  ✗ Any field is left empty
+  ✗ Two processes share the same ID
+  ✗ Arrival Time is negative
+  ✗ Arrival Time is not a whole number
+  ✗ Burst Time is 0 or negative
+  ✗ Burst Time is not a whole number
+  ✗ Priority is less than 1
+  ✗ Priority is not a whole number
+
+The error message will tell you exactly which process
+has the problem and what the issue is.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. KEY DIFFERENCES SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Feature              | Round Robin        | Priority Scheduling
+---------------------|--------------------|-----------------------
+CPU Selection Rule   | FIFO queue order   | Lowest priority number
+Time Limit           | Fixed quantum      | Runs until preempted
+Preemptive?          | Yes (by quantum)   | Yes (by priority)
+Fairness             | High — equal turns | Low — urgent wins
+Starvation Risk      | None               | Yes — for low priority
+Affected by Priority | NO                 | YES — core rule
+Best For             | Time-sharing OS    | Real-time systems
+Response Time        | Predictable        | Fast for high priority
+Waiting Time         | Even distribution  | Varies by priority
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. TECHNICAL NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Built with: HTML5, CSS3, Vanilla JavaScript only
+- No frameworks, no libraries, no external dependencies
+  (except Google Fonts for typography)
+- Works in any modern browser (Chrome, Firefox, Edge, Safari)
+- Dark mode toggle available in the top-right corner
+- Fully responsive — works on mobile from 320px width
+- All simulation logic runs locally in the browser
+- AI report requires Claude.ai environment (Anthropic API)
+
+================================================================
+End of Guide
+================================================================
